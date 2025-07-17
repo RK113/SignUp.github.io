@@ -1,53 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Submit to Google Sheet</title>
-</head>
-<body>
-  <h2>Contact Form</h2>
-  <form id="myForm">
-    <label>Name:</label><br>
-    <input type="text" name="name" required><br>
-    <label>Email:</label><br>
-    <input type="email" name="email" required><br>
-    <label>Message:</label><br>
-    <textarea name="message" required></textarea><br><br>
-    <input type="submit" value="Submit">
-  </form>
+<form id="myForm">
+  <input type="text" name="name" placeholder="Name" required><br>
+  <input type="email" name="email" placeholder="Email" required><br>
+  <textarea name="message" placeholder="Message" required></textarea><br>
+  <button type="submit">Submit</button>
+</form>
 
-  <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwTEBNidDAyDKfwCnxZwz789PefKbOLEA6K2p4DLBBwrMp6jX6LYG2XWbN6lD6dHZFt1g/exec'; // Replace with your URL
+<script>
+const form = document.getElementById("myForm");
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
 
-    document.getElementById("myForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+  const formData = new FormData(form);
 
-      const form = e.target;
-      const data = {
-        name: form.name.value,
-        email: form.email.value,
-        message: form.message.value,
-      };
+  fetch("https://script.google.com/macros/s/AKfycbwTEBNidDAyDKfwCnxZwz789PefKbOLEA6K2p4DLBBwrMp6jX6LYG2XWbN6lD6dHZFt1g/exec", {
+    method: "POST",
+    body: formData,
+    mode: "no-cors" // prevents CORS errors, but you won’t get response
+  });
 
-      fetch(scriptURL, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.result === "success") {
-          alert("Submitted successfully!");
-          form.reset();
-        } else {
-          alert("Failed: " + res.message);
-        }
-      })
-      .catch((err) => {
-        alert("Fetch error: " + err.message);
-      });
-    });
-  </script>
-</body>
-</html>
+  alert("Form submitted!");
+  form.reset();
+});
+</script>
